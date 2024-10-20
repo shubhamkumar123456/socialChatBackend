@@ -6,6 +6,7 @@ const createConversation = async(req,res)=>{
         members:{$all:[req.body.recieverId,req.body.senderId]}
     })
     
+    
     if(conversation.length){
     //    console.log("conversation",conversation)
     res.status(200).json(conversation[0])

@@ -38,7 +38,13 @@ app.use('/api/messages', messagesRoutes)
  let users = [];
  console.log(users)
  const addUser = (userId,socketId)=>{
-  !users.some(user=>user.userId===userId) && users.push({userId,socketId});
+  let index = users.findIndex((user)=>user.userId===userId);
+  if(index!=-1){
+      users[index] = {userId,socketId}
+  }else{
+      users.push({userId,socketId})
+  }
+  // !users.some(user=>user.userId===userId) && users.push({userId,socketId});
  }
  const removeUser = (socketId)=>{
   users = users.filter(user=>user.socketId!==socketId)
