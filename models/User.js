@@ -40,7 +40,7 @@ const userSchema = mongoose.Schema({
     },
     profilePicture:{
         type:String,
-        default:"https://toppng.com/public/uploads/preview/instagram-default-profile-picture-11562973083brycehrmyv.png"
+        default:"https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
     },
     followers:
         [{
@@ -52,10 +52,10 @@ const userSchema = mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",
      }],
-    isAdmin:{
-        type:Boolean,
-        default:false
-    },
+    // isAdmin:{
+    //     type:Boolean,
+    //     default:false
+    // },
     desc:{
         type:String,
         max:50
@@ -67,19 +67,7 @@ const userSchema = mongoose.Schema({
     from:{
         type:String,
         max:50
-    },
-    relationship:{
-        type:Number,
-        enum:[1,2,3],
-    },
-    posts:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Post",
-     }],
-     conversation:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Conversation"
-     }],
+    }
 },{timestamps:true})
 
 const User = mongoose.model("User",userSchema);
