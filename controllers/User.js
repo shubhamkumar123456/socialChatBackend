@@ -57,10 +57,10 @@ const loginUser = async (req, res) => {
     // ✅ Send cookie
     res.cookie("token", token, {
       httpOnly: true, // 🔥 cannot access via JS
-      // secure: false, // true in production (https)
-      secure: true, // true in production (https)
-      // sameSite: "lax", // when frontend-backend are same
-        sameSite: "none",      // when different
+      secure: false, // true in production (https)
+      // secure: true, // true in production (https)
+      sameSite: "lax", // when frontend-backend are same
+        // sameSite: "none",      // when different
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
