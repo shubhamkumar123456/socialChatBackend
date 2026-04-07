@@ -19,7 +19,7 @@ const cookieParser = require("cookie-parser");
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // your frontend
+    origin: ["http://localhost:5173",'https://social-media-woad-five.vercel.app'], // your frontend
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   }),
