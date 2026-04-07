@@ -187,7 +187,7 @@ const searchUsers = async (req, res) => {
     if (query) {
       var users = await User.find({
         name: { $regex: query, $options: "i" },
-      }).select("name profilePicture followers");
+      }).select("name profilePicture followers followings");
     } else {
       return res.status(404).json({ msg: "no user found", users: [] });
     }

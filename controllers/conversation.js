@@ -1,31 +1,29 @@
-const Conversation = require('../models/Conversation')
-const User = require('../models/User')
+const Conversation = require('../models/Conversation');
+const Message = require('../models/Message')
+const User = require('../models/User');
+
 const createConversation = async(req,res)=>{
-    let user = await User.findOne({_id:req.body.senderId});
+    let senderId = req.userId;
+    
     let conversation  = await Conversation.find({
-        members:{$all:[req.body.recieverId,req.body.senderId]}
+        members:{$all:[req.params.recieverId,senderId]}
     })
     
+    console.log("conversation", conversation)
     
     if(conversation.length){
-    //    console.log("conversation",conversation)
-    res.status(200).json(conversation[0])
-   }else{
-    conversation =await Conversation.create({
-        members: [req.body.senderId, req.body.recieverId]
-    })
+        //    console.log("conversation",conversation)
+        res.status(200).json(conversation[0])
+    }else{
+        conversation =await Conversation.create({
+            members: [senderId,recieverId]
+        })
     
-        let friend = await User.findOne({_id:req.body.recieverId})
-        if(!user.conversation.includes(conversation._id) && !friend.conversation.includes(conversation._id)){
-
-            await user.updateOne({$push:{conversation:conversation._id}})
-            await friend.updateOne({$push:{conversation:conversation._id}})
-         
-        }
-        // console.log(user)
-        // console.log(friend)
         try {
-        res.status(200).json(conversation)
+            let user = await User.findOne({_id:senderId});
+            let friend = await User.findOne({_id:recieverId})
+            await Message.create({})
+       
  
     
 } catch (error) {

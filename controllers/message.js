@@ -1,66 +1,92 @@
-const Message = require('../models/Message')
-let User = require('../models/User')
+    let Message = require('../models/Message');
+    let Conversation = require('../models/Conversation')
+    let User = require('../models/User')
 
-const createMessage = async (req, res) => {
-    const message = await Message.create(req.body)
+const sendMessage = async(req,res)=>{
+  const sender = req.userId;
+  const reciever = req.params.recieverId
+  const {text} = req.body;
+  
+
     try {
-        if (message) {
-            res.status(200).json(message)
-        }
-    } catch (e) {
-        res.status(500).json(e)
-    }
-}
+    let conversation = await Conversation.findOne({
+        members:{$all:[sender,reciever]}
+    });
+    // console.log("conversation")
 
-
-const getMessage = async (req, res) => {
-    try {
-        const messages = await Message.find({
-            conversationId:req.params.conversationId
+    if(!conversation){
+        conversation = await Conversation.create({
+            members:[sender,reciever]
         })
-        res.status(200).json(messages)
-    } catch (error) {
-        res.status(500).json(error)
     }
+    const newMessage = await new Message({
+        reciever,
+        sender,
+        text
+    })
+        await conversation.messages.push(newMessage._id)
+    await newMessage.save()
+        await conversation.save()
+        res.json({msg:"message send successfully",success:true,conversation})
+} catch (error) {
+        res.json({msg:"error in sending message",success:false,error:error.message})
 }
-const getUserAllMessage = async (req, res) => {
- 
-    try {
-        const user = await User.findOne({_id:req.body.userId}).populate({path:"conversation"});
-        // const messages =await Promise.all(
-        //     user.conversation.map((msg)=>{
-        //         return Message.find({sender:user._id})
-        //     })
-        //     )
-        let conversations = user.conversation
-      let arr =[];
-        let friendsIds = conversations.map((user)=>{
-            // console.log(user.members)
-            // {"breed" : { $in : ["Pitbull", "Great Dane", "Pug"]}}
-           return  user.members.map((member)=>{
-                    if(member!==req.body.userId){
-                        arr.push(member)
-                    }
-                    return arr;
-           })
-        })
-    
-        const friendPosts = await Promise.all(
-            arr.map((friendId) => {
-                return User.find({ _id: friendId })
-            })
-        );
-        res.status(200).json(friendPosts);
-    } catch (error) {
-        res.status(500).json(error)
-    }
 }
 
 
+const getuserConversations = async(req,res)=>{
+  try {
+    const userId = req.userId;
+    console.log(userId)
+    let data = await Conversation.find({
+     members:{$in:[userId]}
+    }).select('members').populate({
+      path:'members',
+      select:'name profilePicture'
+    })
+
+    const chats = data.map((conv) => {
+      const otherUser = conv.members.find(
+        (member) => member._id.toString() !== userId
+      );
+
+      return otherUser
+    });
+
+
+    res.json({msg:"successfully fetched conversation",success:true,users:chats})
+  } catch (error) {
+    res.json({msg:"error in getting conversation",success:false,error:error.message})
+  }
+}
+
+const getSingleChat = async(req,res)=>{
+   try {
+    const userId = req.userId;
+    let friendId = req.params.friendId
+    // console.log(friendId)
+    // console.log(userId)
+
+    let conversation = await Conversation.findOne({
+      members:{$all:[userId,friendId]}
+    }).select('messages').populate({path:'messages'});
+      
+    //   console.log(conversation)
+   if(conversation){
+    return res.status(200).json({msg:"chat fetched successfullly", success:true,chat:conversation})
+   }
+   else{
+   return res.status(404).json({msg:"converstation not found", success:false})
+   }
+   } catch (error) {
+    res.json({msg:"error in getting chat",success:false,error:error.message})
+   }
+    // let chat = await
+}
 
 
 module.exports = {
-    createMessage,
-    getMessage,
-    getUserAllMessage
+    sendMessage,
+    getuserConversations,
+    getSingleChat
 }

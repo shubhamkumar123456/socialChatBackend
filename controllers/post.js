@@ -66,7 +66,7 @@ const createPost = async (req, res) => {
 };
 const getAll = async (req, res) => {
   try {
-    const post = await Post.find().populate({
+    const post = await Post.find().sort({createdAt:-1}).populate({
       path: "userId",
       select: "name profilePicture",
     });
