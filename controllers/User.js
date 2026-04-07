@@ -59,7 +59,7 @@ const loginUser = async (req, res) => {
       httpOnly: true, // 🔥 cannot access via JS
       secure: true, // true in production (https)
       // secure: true, // true in production (https)
-      sameSite: "lax", // when frontend-backend are same
+      sameSite: "none", // when frontend-backend are same
         // sameSite: "none",      // when different
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
@@ -83,7 +83,7 @@ const logoutUser = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
     secure: true, // same as login config
-    sameSite: "lax",
+    sameSite: "none",
   });
 
   res.status(200).json({ msg: "logout successful" });
