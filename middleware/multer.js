@@ -29,7 +29,8 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'social_app', // Name of the folder in Cloudinary
-    allowed_formats: ['jpg', 'png', 'jpeg'],
+    // allowed_formats: ['jpg', 'png', 'jpeg'],
+    resource_type: 'auto',
   },
 });
 
