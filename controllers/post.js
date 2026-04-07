@@ -41,22 +41,43 @@ const User = require("../models/User");
 
 // }
 
+// const createPost = async (req, res) => {
+//   try {
+//     // console.log("files:", req.files);
+//     // console.log("body:", req.body);
+//     const { desc } = req.body;
+
+//     // files array
+//     const files = req.files;
+
+//     const mediaUrls = files.map((file) => file.filename);
+
+//     // save in DB
+//     const post = await Post.create({
+//       userId: req.userId,
+//       desc,
+//       media: mediaUrls,
+//     });
+
+//     res.status(201).json(post);
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
 const createPost = async (req, res) => {
   try {
-    // console.log("files:", req.files);
-    // console.log("body:", req.body);
     const { desc } = req.body;
-
-    // files array
     const files = req.files;
 
-    const mediaUrls = files.map((file) => file.filename);
+    // CHANGE: Use file.path to get the full URL from Cloudinary
+    const mediaUrls = files.map((file) => file.path);
 
     // save in DB
     const post = await Post.create({
       userId: req.userId,
       desc,
-      media: mediaUrls,
+      media: mediaUrls, // This now stores full URLs
     });
 
     res.status(201).json(post);
