@@ -57,7 +57,7 @@ const loginUser = async (req, res) => {
     // ✅ Send cookie
     res.cookie("token", token, {
       httpOnly: true, // 🔥 cannot access via JS
-      secure: false, // true in production (https)
+      secure: true, // true in production (https)
       // secure: true, // true in production (https)
       sameSite: "lax", // when frontend-backend are same
         // sameSite: "none",      // when different
@@ -82,7 +82,7 @@ const loggedInUser = async (req, res) => {
 const logoutUser = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    secure: false, // same as login config
+    secure: true, // same as login config
     sameSite: "lax",
   });
 
