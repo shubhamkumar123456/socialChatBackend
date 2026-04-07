@@ -7,16 +7,7 @@ var cors = require("cors");
 const socketIO = require("socket.io");
 const http = require("http");
 const server = http.createServer(app);
-const io = socketIO(server, {
-  cors: {
-    origin: [
-      "http://localhost:5173",
-      "https://social-media-woad-five.vercel.app"
-    ],
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
+
 // const fileUpload = require("express-fileupload");
 const UserRoutes = require("./routes/user");
 const postRoutes = require("./routes/post");
@@ -33,6 +24,17 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   }),
 );
+
+const io = socketIO(server, {
+  cors: {
+    origin: [
+      "http://localhost:5173",
+      "https://social-media-woad-five.vercel.app"
+    ],
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 // app.use(
 //   fileUpload({
 //     useTempFiles: true,
