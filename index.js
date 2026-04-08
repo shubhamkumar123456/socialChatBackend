@@ -25,14 +25,21 @@ const messagesRoutes = require("./routes/message");
 const cookieParser = require("cookie-parser");
 
 // const {addUser ,removeUser , getUser} = require('./users')
-
+console.log(process.env.Mode);
+console.log(
+  process.env.Mode === "developement"
+    ? process.env.MONGO_LOCAL
+    : process.env.MONGODB_URL,
+);
 app.use(
   cors({
-    origin: ["http://localhost:5173",'https://social-media-woad-five.vercel.app'], // your frontend
+    origin: [
+      "http://localhost:5173",
+      "https://social-media-woad-five.vercel.app",
+    ], // your frontend
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     transports: ["websocket"],
-
   }),
 );
 // app.use(
@@ -62,9 +69,15 @@ const addUser = (userId, socketId) => {
   console.log(users);
 };
 
-const removeUser = (userId, socketId) => {
-  delete users[userId] == socketId;
-  console.log(users);
+const removeUser = (socketId) => {
+  // Find the userId belonging to this socketId and delete it
+  for (const userId in users) {
+    if (users[userId] === socketId) {
+      delete users[userId];
+      break;
+    }
+  }
+  console.log("User removed. Remaining:", users);
 };
 
 io.on("connection", (socket) => {
@@ -78,7 +91,7 @@ io.on("connection", (socket) => {
   socket.on("sendMessage", ({ senderId, recieverId, text }) => {
     const recieverSocket = users[recieverId];
     if (recieverSocket) {
-      socket.to(recieverSocket).emit("getMessage", {
+      io.to(recieverSocket).emit("getMessage", {
         senderId,
         recieverId,
         text,
@@ -88,7 +101,7 @@ io.on("connection", (socket) => {
   });
 
   //when disconnect user
-  socket.on("disconect", (userId) => {
+  socket.on("disconnect", (userId) => {
     console.log("user has left");
     removeUser(userId, socket.id);
     // io.emit("getUsers", users);
