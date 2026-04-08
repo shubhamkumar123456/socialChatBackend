@@ -91,7 +91,7 @@ io.on("connection", (socket) => {
   socket.on("sendMessage", ({ senderId, recieverId, text }) => {
     const recieverSocket = users[recieverId];
     if (recieverSocket) {
-      io.to(recieverSocket).emit("getMessage", {
+      socket.to(recieverSocket).emit("getMessage", {
         senderId,
         recieverId,
         text,
